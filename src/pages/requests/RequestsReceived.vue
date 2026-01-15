@@ -1,5 +1,3 @@
 <template>
-  <di>
-
-  </di>
+ REQUESTS
 </template>

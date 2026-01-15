@@ -1,5 +1,3 @@
 <template>
-  <di>
-
-  </di>
+ REGISTER
 </template>
