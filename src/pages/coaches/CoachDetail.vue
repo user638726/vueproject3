@@ -1,5 +1,13 @@
 <template>
-Details For Coach
-<router-view></router-view>
-<router-link to="/coaches/c1/contact">Contact</router-link>
+<div></div>
 </template>
+
+<script>
+export default {
+  computed: {
+    selectedCoach() {
+      return this.$store.getters['coaches/coach'](this.$route.params.id);
+    },
+  },
+};
+</script>

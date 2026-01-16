@@ -1,6 +1,10 @@
 import { createStore } from 'vuex';
+import coachesModule from './modules/coaches/index';
 
-export default createStore({
+const store = createStore({
+  modules: {
+    coaches: coachesModule,
+  },
   state: {
   },
   getters: {
@@ -9,6 +13,6 @@ export default createStore({
   },
   actions: {
   },
-  modules: {
-  },
 });
+
+export default store;
