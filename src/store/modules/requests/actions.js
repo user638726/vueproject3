@@ -25,20 +25,28 @@ export default {
   },
   async fetchRequests(context) {
     const coachId = context.rootGetters.userId;
+    const { token } = context.rootGetters;
     try {
       const response = await axios.get(
-        `https://vueproject3-18132-default-rtdb.asia-southeast1.firebasedatabase.app/requests/${coachId}.json`,
+        `https://vueproject3-18132-default-rtdb.asia-southeast1.firebasedatabase.app/requests/${coachId}.json?auth=${token}`,
       );
       const requests = [];
       const responseData = response.data || response;
+      if (!responseData) {
+        context.commit('setRequests', requests);
+        return;
+      }
       Object.keys(responseData).forEach((key) => {
-        const request = {
-          id: key,
-          coachId,
-          userEmail: responseData[key].userEmail,
-          message: responseData[key].message,
-        };
-        requests.push(request);
+        const requestData = responseData[key];
+        if (requestData) {
+          const request = {
+            id: key,
+            coachId,
+            userEmail: requestData.userEmail,
+            message: requestData.message,
+          };
+          requests.push(request);
+        }
       });
       context.commit('setRequests', requests);
     } catch (error) {
