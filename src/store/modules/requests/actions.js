@@ -1,11 +1,52 @@
+import axios from 'axios';
+
 export default {
-  contactCoach(context, payload) {
+  async contactCoach(context, payload) {
     const newRequest = {
-      id: new Date().toISOString(),
-      coachId: payload.coachId,
       userEmail: payload.email,
       message: payload.message,
     };
-    context.commit('addRequest', newRequest);
+    try {
+      const response = await axios.post(
+        `https://vueproject3-18132-default-rtdb.asia-southeast1.firebasedatabase.app/requests/${payload.coachId}.json`,
+        newRequest,
+      );
+      // 從 Firebase 回應中獲取生成的 ID
+      newRequest.id = response.data.name;
+      newRequest.coachId = payload.coachId;
+      context.commit('addRequest', newRequest);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('發送聯絡訊息時發生錯誤:', error);
+      // 可以選擇性地提交錯誤狀態到 store
+      // context.commit('setError', error.message);
+      throw error; // 重新拋出錯誤，讓調用者可以處理
+    }
+  },
+  async fetchRequests(context) {
+    const coachId = context.rootGetters.userId;
+    try {
+      const response = await axios.get(
+        `https://vueproject3-18132-default-rtdb.asia-southeast1.firebasedatabase.app/requests/${coachId}.json`,
+      );
+      const requests = [];
+      const responseData = response.data || response;
+      Object.keys(responseData).forEach((key) => {
+        const request = {
+          id: key,
+          coachId,
+          userEmail: responseData[key].userEmail,
+          message: responseData[key].message,
+        };
+        requests.push(request);
+      });
+      context.commit('setRequests', requests);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('載入請求資料時發生錯誤:', error);
+      // 可以選擇性地提交錯誤狀態到 store
+      // context.commit('setError', error.message);
+      throw error; // 重新拋出錯誤，讓調用者可以處理
+    }
   },
 };
