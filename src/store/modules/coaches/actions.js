@@ -24,7 +24,10 @@ export default {
         // Handle error silently or add error handling logic here
       });
   },
-  async loadCoaches(context) {
+  async loadCoaches(context, payload) {
+    if (!payload.forceRefresh && !context.getters.shouldUpdate) {
+      return;
+    }
     try {
       const response = await axios.get(
         'https://vueproject3-18132-default-rtdb.asia-southeast1.firebasedatabase.app/coaches.json',
@@ -43,6 +46,7 @@ export default {
         coaches.push(coach);
       });
       context.commit('setCoaches', coaches);
+      context.commit('setFetchTimeStamp');
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('載入教練資料時發生錯誤:', error);

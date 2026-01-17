@@ -1,27 +1,23 @@
 <template>
   <teleport to="body">
-    <div
-      v-if="show"
-      @click="tryClose"
-      @keydown.esc="tryClose"
-      class="backdrop"
-      tabindex="0"
-    ></div>
-    <dialog open v-if="show">
-      <header>
-        <slot name="header">
-          <h2>{{ title }}</h2>
-        </slot>
-      </header>
-      <section>
-        <slot></slot>
-      </section>
-      <menu v-if="!fixed">
-        <slot name="actions">
-          <base-button @click="tryClose">Close</base-button>
-        </slot>
-      </menu>
-    </dialog>
+    <div v-if="show" @click="tryClose" @keydown.esc="tryClose" class="backdrop" tabindex="0"></div>
+    <transition name="dialog">
+      <dialog open v-if="show">
+        <header>
+          <slot name="header">
+            <h2>{{ title }}</h2>
+          </slot>
+        </header>
+        <section>
+          <slot></slot>
+        </section>
+        <menu v-if="!fixed">
+          <slot name="actions">
+            <base-button @click="tryClose">Close</base-button>
+          </slot>
+        </menu>
+      </dialog>
+    </transition>
   </teleport>
 </template>
 
@@ -102,6 +98,25 @@ menu {
   margin: 0;
 }
 
+.dialog-enter-from,
+.dialog-leave-to{
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.dialog-enter-active{
+  transition: all 0.3s ease-out;
+}
+
+.dialog-leave-active {
+  transition: all 0.3s ease-in;
+}
+
+.dialog-enter-to,
+.dialog-leave-from{
+  opacity:1;
+  transform:scale(1);
+}
 @media (min-width: 768px) {
   dialog {
     left: calc(50% - 20rem);
