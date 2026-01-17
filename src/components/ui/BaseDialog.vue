@@ -1,22 +1,24 @@
 <template>
   <teleport to="body">
-    <div v-if="show" @click="tryClose" @keydown.esc="tryClose" class="backdrop" tabindex="0"></div>
     <transition name="dialog">
-      <dialog open v-if="show">
-        <header>
-          <slot name="header">
-            <h2>{{ title }}</h2>
-          </slot>
-        </header>
-        <section>
-          <slot></slot>
-        </section>
-        <menu v-if="!fixed">
-          <slot name="actions">
-            <base-button @click="tryClose">Close</base-button>
-          </slot>
-        </menu>
-      </dialog>
+      <div v-if="show">
+        <div @click="tryClose" @keydown.esc="tryClose" class="backdrop" tabindex="0"></div>
+        <dialog open>
+          <header>
+            <slot name="header">
+              <h2>{{ title }}</h2>
+            </slot>
+          </header>
+          <section>
+            <slot></slot>
+          </section>
+          <menu v-if="!fixed">
+            <slot name="actions">
+              <base-button @click="tryClose">Close</base-button>
+            </slot>
+          </menu>
+        </dialog>
+      </div>
     </transition>
   </teleport>
 </template>
